@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const { Pool } = require('pg');
-const { createClient } = require('@redis/client'); // Usando a versão mais recente do pacote
+const { createClient } = require('@redis/client');
 
 // Configurações do app
 const app = express();
@@ -14,10 +14,10 @@ mongoose.connect('mongodb://localhost:27017/livros_db', {})
     .then(() => console.log('Conectado ao MongoDB'))
     .catch(err => console.error('Erro ao conectar ao MongoDB', err));
 
-// Conectar ao Redis com a versão mais recente
+// Conectar ao Redis
 const redisClient = createClient({
     socket: {
-        host: 'localhost',  // Alterado para localhost
+        host: 'localhost', 
         port: 6379
     }
 });
@@ -72,13 +72,28 @@ const pool = new Pool({
     port: 5432,                 // Porta do PostgreSQL
 });
 
-// Rota para obter todos os livros
+// Rota para obter livros com paginação
 app.get('/api/livros', async (req, res) => {
-    //console.log('Requisição recebida para obter todos os livros');
+    const { page = 1, limit = 5, categoria = '' } = req.query; // Default
+    const skip = (page - 1) * limit; // Pular livros com base na página
+
     try {
-        // Removido o log que imprimia todos os livros
-        const livros = await Livro.find();
-        res.json(livros); // Retorna os livros sem imprimir no console
+        // Filtrar por categoria (se fornecido)
+        const filtro = categoria ? { categorias: categoria } : {};
+
+        // Obter os livros da página atual
+        const livros = await Livro.find(filtro)
+            .skip(Number(skip))
+            .limit(Number(limit));
+
+        // Contar o total de livros para calcular o número total de páginas
+        const totalLivros = await Livro.countDocuments(filtro);
+        const totalPaginas = Math.ceil(totalLivros / limit);
+
+        res.json({
+            livros,
+            totalPaginas,
+        });
     } catch (err) {
         console.error('Erro ao obter livros', err);
         res.status(500).send("Erro ao obter livros");
@@ -104,9 +119,9 @@ app.get('/api/livros/:id', async (req, res) => {
 
 // Rota para login
 app.post('/api/login', async (req, res) => {
-    console.log("Corpo da requisição de login:", req.body); // Verifique o corpo da requisição
+    console.log("Corpo da requisição de login:", req.body); // Corpo da requisição
     const { email, senha } = req.body;
-    console.log('Tentando login para:', email); // Log adicional
+    console.log('Tentando login para:', email); // Log de depuração
     try {
         const result = await pool.query('SELECT * FROM Clientes WHERE email = $1', [email]);
 
@@ -135,38 +150,27 @@ app.post('/api/login', async (req, res) => {
 
 // Rota para adicionar um livro ao carrinho
 app.post('/api/carrinho/:userId', async (req, res) => {
-    const { userId } = req.params;  // Obtém o userId da URL
+    const { userId } = req.params;
     const { idProduto, quantidade } = req.body;
 
-    console.log('userId:', userId);  // Adiciona logs de depuração
-    console.log('idProduto:', idProduto);
-
     try {
-        // Verifica se o idProduto é um ObjectId válido
         const livro = await Livro.findById(idProduto);
         if (!livro) {
-            console.log(`Livro com ID ${idProduto} não encontrado`);
             return res.status(404).send("Livro não encontrado");
         }
 
-        // Verifica a conexão com o Redis usando async/await
-        try {
-            const pingResponse = await redisClient.ping();  // Usando ping com Promise
-            console.log("Redis está disponível:", pingResponse);  // Log de sucesso
-        } catch (err) {
-            console.error("Erro de conexão com Redis:", err);  // Log detalhado de erro
-            return res.status(500).send("Erro ao conectar ao Redis");
+        // Verificar se há estoque suficiente
+        if (livro.estoque < quantidade) {
+            return res.status(400).send("Estoque insuficiente");
         }
 
-        // Acessa o carrinho armazenado no Redis
-        const reply = await redisClient.get(`carrinho:${userId}`);  // Usando async/await no lugar do callback
-        console.log("Carrinho recuperado do Redis:", reply);
-
+        // Recuperar o carrinho do Redis
+        const reply = await redisClient.get(`carrinho:${userId}`);
         let carrinho = reply ? JSON.parse(reply) : { itens: [], totalItens: 0, totalPreco: 0 };
 
         const livroExistente = carrinho.itens.find(item => item.idProduto === idProduto);
         if (livroExistente) {
-            livroExistente.quantidade += quantidade;  // Se o livro já estiver no carrinho, aumenta a quantidade
+            livroExistente.quantidade += quantidade;
         } else {
             carrinho.itens.push({
                 idProduto: livro._id,
@@ -176,19 +180,16 @@ app.post('/api/carrinho/:userId', async (req, res) => {
             });
         }
 
-        // Recalcule os totais
+        // Recalcular totais
         carrinho.totalItens = carrinho.itens.reduce((total, item) => total + item.quantidade, 0);
         carrinho.totalPreco = carrinho.itens.reduce((total, item) => total + item.preco * item.quantidade, 0);
 
-        console.log("Carrinho atualizado:", carrinho);
+        // Salvar o carrinho no Redis
+        await redisClient.set(`carrinho:${userId}`, JSON.stringify(carrinho));
 
-        // Salva o carrinho no Redis
-        await redisClient.set(`carrinho:${userId}`, JSON.stringify(carrinho));  // Usando async/await no lugar do callback
-        console.log("Carrinho salvo no Redis para o usuário:", userId);  // Log de sucesso
-
-        res.status(200).json(carrinho);  // Retorna o carrinho atualizado
+        res.status(200).json(carrinho);
     } catch (error) {
-        console.error("Erro ao adicionar livro ao carrinho:", error); // Adiciona logs de erro
+        console.error("Erro ao adicionar livro ao carrinho:", error);
         res.status(500).send("Erro ao adicionar ao carrinho");
     }
 });
@@ -208,10 +209,202 @@ app.get('/api/carrinho/:userId', async (req, res) => {
 
         const carrinho = JSON.parse(reply);
         console.log("Carrinho recuperado:", carrinho); // Log para depuração
-        res.status(200).json(carrinho); // Retorna o carrinho completo
+        res.status(200).json(carrinho); // Retorna o carrinho
     } catch (error) {
         console.error("Erro ao buscar o carrinho:", error);
         res.status(500).send("Erro ao buscar o carrinho");
+    }
+});
+
+// Rota para remover um item específico do carrinho
+app.delete('/api/carrinho/:userId/remover/:idProduto', async (req, res) => {
+    const { userId, idProduto } = req.params;
+    const { quantidade } = req.body;  // A quantidade a ser removida
+
+    try {
+        // Recupera o carrinho do Redis
+        const reply = await redisClient.get(`carrinho:${userId}`);
+        if (!reply) {
+            console.log(`Carrinho do usuário ${userId} não encontrado`);
+            return res.status(404).json({ mensagem: "Carrinho não encontrado" });
+        }
+
+        let carrinho = JSON.parse(reply);
+        const itemIndex = carrinho.itens.findIndex(item => item.idProduto === idProduto);
+
+        if (itemIndex === -1) {
+            return res.status(404).json({ mensagem: "Produto não encontrado no carrinho" });
+        }
+
+        const item = carrinho.itens[itemIndex];
+
+        if (item.quantidade <= quantidade) {
+            // Se a quantidade a ser removida for maior ou igual à quantidade no carrinho, remove o item
+            carrinho.itens.splice(itemIndex, 1);
+        } else {
+            // Se não, apenas diminui a quantidade do item
+            item.quantidade -= quantidade;
+        }
+
+        // Recalcula os totais
+        carrinho.totalItens = carrinho.itens.reduce((total, item) => total + item.quantidade, 0);
+        carrinho.totalPreco = carrinho.itens.reduce((total, item) => total + item.preco * item.quantidade, 0);
+
+        // Salva o carrinho atualizado no Redis
+        await redisClient.set(`carrinho:${userId}`, JSON.stringify(carrinho));
+
+        res.status(200).json(carrinho);  // Retorna o carrinho atualizado
+    } catch (error) {
+        console.error("Erro ao remover item do carrinho:", error);
+        res.status(500).send("Erro ao remover item do carrinho");
+    }
+});
+
+// Rota para remover todos os itens do carrinho
+app.delete('/api/carrinho/:userId/remover-todos', async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Recupera o carrinho do Redis
+        const reply = await redisClient.get(`carrinho:${userId}`);
+        if (!reply) {
+            console.log(`Carrinho do usuário ${userId} não encontrado`);
+            return res.status(404).json({ mensagem: "Carrinho não encontrado" });
+        }
+
+        let carrinho = JSON.parse(reply);
+
+        // Limpa todos os itens do carrinho
+        carrinho.itens = [];
+        carrinho.totalItens = 0;
+        carrinho.totalPreco = 0;
+
+        // Salva o carrinho vazio no Redis
+        await redisClient.set(`carrinho:${userId}`, JSON.stringify(carrinho));
+
+        res.status(200).json(carrinho);  // Retorna o carrinho vazio
+    } catch (error) {
+        console.error("Erro ao remover todos os itens do carrinho:", error);
+        res.status(500).send("Erro ao remover todos os itens do carrinho");
+    }
+});
+
+// Rota para finalizar a compra
+app.post('/api/finalizar-compra/:userId', async (req, res) => {
+    const { userId } = req.params;
+    const { itensCompra, metodoPagamento } = req.body; // Incluindo o método de pagamento
+
+    console.log("Método de pagamento recebido:", metodoPagamento); // Verificando se o valor está correto
+
+    try {
+        // 1. Calcular o valor total do pedido a partir do carrinho
+        let valorTotal = 0;
+        for (const item of itensCompra) {
+            const livro = await Livro.findById(item.idProduto);
+            if (!livro) {
+                return res.status(404).send(`Livro com ID ${item.idProduto} não encontrado`);
+            }
+
+            if (livro.estoque < item.quantidade) {
+                return res.status(400).send(`Estoque insuficiente para o livro: ${livro.titulo}`);
+            }
+
+            if (!livro.preco || isNaN(livro.preco)) {
+                return res.status(400).send(`Preço inválido para o livro: ${item.idProduto}`);
+            }
+
+            valorTotal += livro.preco * item.quantidade; // Cálculo do valor total
+        }
+
+        // Verificar se o valorTotal é um número válido
+        if (isNaN(valorTotal) || valorTotal <= 0) {
+            return res.status(400).send("Valor total do pedido é inválido.");
+        }
+
+        // 2. Criar o pedido na tabela 'Pedidos'
+        const result = await pool.query(
+            'INSERT INTO Pedidos (id_cliente, valor_total, metodo_pagamento) VALUES ($1, $2, $3) RETURNING id_pedido',
+            [userId, valorTotal, metodoPagamento]  // Incluindo o método de pagamento
+        );
+
+        const idPedido = result.rows[0].id_pedido;
+
+        // 3. Criar os itens do pedido na tabela 'ItensPedidos'
+        for (const item of itensCompra) {
+            const livro = await Livro.findById(item.idProduto);
+            if (!livro || !livro.preco || isNaN(livro.preco)) {
+                return res.status(400).send(`Valor unitário inválido para o livro: ${item.idProduto}`);
+            }
+
+            const valorTotalItem = livro.preco * item.quantidade;
+
+            // Inserir o item do pedido
+            await pool.query(
+                'INSERT INTO ItensPedidos (id_pedido, id_produto, quantidade, valor_unitario, valor_total) VALUES ($1, $2, $3, $4, $5)',
+                [idPedido, item.idProduto, item.quantidade, livro.preco, valorTotalItem]
+            );
+        }
+
+        // 4. Limpar o carrinho após a compra
+        await redisClient.del(`carrinho:${userId}`);
+
+        // 5. Retornar o ID do pedido criado
+        res.status(200).json({ id_pedido: idPedido });
+    } catch (error) {
+        console.error("Erro ao finalizar a compra:", error);
+        res.status(500).send("Erro ao finalizar a compra");
+    }
+});
+
+
+app.get('/api/clientes/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const cliente = await pool.query('SELECT * FROM Clientes WHERE id_cliente = $1', [id]);
+        if (cliente.rows.length === 0) {
+            return res.status(404).send("Cliente não encontrado");
+        }
+        res.json(cliente.rows[0]);
+    } catch (err) {
+        console.error('Erro ao buscar cliente', err);
+        res.status(500).send("Erro ao buscar cliente");
+    }
+});
+
+app.get('/api/historico/:userId', async (req, res) => {
+    const { userId } = req.params;
+
+    // Verifique se o usuário está autenticado (verifique token ou sessão)
+    if (!userId) {
+        console.log('Usuário não autenticado, retornando erro 401');
+        return res.status(401).json({ error: "Usuário não autenticado" });
+    }
+
+    console.log('Recebendo requisição para histórico do usuário:', userId);
+
+    try {
+        const pedidosResult = await pool.query('SELECT * FROM Pedidos WHERE id_cliente = $1 ORDER BY data DESC', [userId]);
+
+        if (pedidosResult.rows.length === 0) {
+            console.log('Nenhum pedido encontrado');
+            return res.status(404).json({ error: "Nenhum pedido encontrado" });
+        }
+
+        const pedidosComItens = await Promise.all(pedidosResult.rows.map(async (pedido) => {
+            const itensResult = await pool.query('SELECT * FROM ItensPedidos WHERE id_pedido = $1', [pedido.id_pedido]);
+
+            const itensComLivros = await Promise.all(itensResult.rows.map(async (item) => {
+                const livro = await Livro.findById(item.id_produto); // Consultando o MongoDB
+                return livro ? { ...item, livro } : { ...item, livro: null };
+            }));
+
+            return { ...pedido, itens: itensComLivros };
+        }));
+
+        res.json(pedidosComItens);
+    } catch (err) {
+        console.error('Erro ao buscar histórico de compras', err);
+        res.status(500).json({ error: "Erro ao buscar histórico de compras" });
     }
 });
 
@@ -220,3 +413,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
+

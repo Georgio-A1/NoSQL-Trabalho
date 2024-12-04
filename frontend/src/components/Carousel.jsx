@@ -4,42 +4,67 @@ import api from '../services/api';
 import '../style.css';
 
 function Carousel() {
-  const [livros, setLivros] = useState([]); // Todos os livros
+  const [livros, setLivros] = useState([]); // Todos os livros carregados
   const [livrosFiltrados, setLivrosFiltrados] = useState([]); // Livros filtrados por categoria
   const [startIndex, setStartIndex] = useState(0); // Índice inicial do carrossel
   const livrosPorPagina = 5; // Quantos livros mostrar de cada vez
+  const [paginaAtual, setPaginaAtual] = useState(1); // Página atual para a navegação
 
-  useEffect(() => {
-    const fetchLivros = async () => {
-      try {
-        const response = await api.get('/livros');
-        setLivros(response.data);
-        setLivrosFiltrados(response.data); // Inicialmente, mostrar todos os livros
-      } catch (error) {
-        console.error("Erro ao buscar livros:", error);
+  // Função para carregar livros com base na categoria e página
+  const carregarLivros = async (categoria = '', pagina = 1) => {
+    try {
+      const response = await api.get('/livros', {
+        params: {
+          categoria, // Filtra os livros por categoria
+          page: pagina, // Número da página
+          limit: livrosPorPagina, // Limite de livros por requisição
+        },
+      });
+
+      const livrosData = Array.isArray(response.data.livros) ? response.data.livros : [];
+
+      if (pagina === 1) {
+        // Se for a primeira página, limpa a lista e carrega os livros
+        setLivros(livrosData);
+        setLivrosFiltrados(livrosData);
+      } else {
+        // Adiciona os livros carregados ao final da lista
+        setLivros((prevLivros) => [...prevLivros, ...livrosData]);
+        setLivrosFiltrados((prevLivros) => [...prevLivros, ...livrosData]);
       }
-    };
 
-    fetchLivros();
-  }, []);
-
-  const handlePrev = () => {
-    // Vai para o grupo anterior
-    setStartIndex((prev) => Math.max(prev - livrosPorPagina, 0));
+      // Atualiza o estado da página
+      setPaginaAtual(pagina);
+    } catch (error) {
+      console.error("Erro ao buscar livros:", error);
+    }
   };
 
-  const handleNext = () => {
-    // Vai para o próximo grupo
-    setStartIndex((prev) =>
-      Math.min(prev + livrosPorPagina, livrosFiltrados.length - livrosPorPagina)
-    );
-  };
+  // Carrega os livros quando o componente é montado ou quando o filtro muda
+  useEffect(() => {
+    carregarLivros('', paginaAtual); // Carrega livros sem filtro ao montar
+  }, [paginaAtual]);
 
+  // Função para aplicar o filtro de categoria
   const handleFilter = (categoria) => {
-    // Filtrar livros pela categoria
-    const filtrados = livros.filter((livro) => livro.categorias.includes(categoria));
-    setLivrosFiltrados(filtrados);
-    setStartIndex(0); // Reiniciar o carrossel ao início
+    setPaginaAtual(1); // Reinicia para a primeira página ao aplicar filtro
+    setLivros([]); // Limpa livros carregados
+    setLivrosFiltrados([]); // Limpa livros filtrados
+    carregarLivros(categoria, 1); // Carrega livros da primeira página com filtro
+  };
+
+  // Função para navegar para a próxima página de livros
+  const handleNext = () => {
+    setStartIndex((prev) => prev + livrosPorPagina); // Avança no índice
+    setPaginaAtual(paginaAtual + 1); // Avança para a próxima página
+  };
+
+  // Função para navegar para a página anterior
+  const handlePrev = () => {
+    if (startIndex > 0) {
+      setStartIndex((prev) => prev - livrosPorPagina); // Retrocede no índice
+      setPaginaAtual(paginaAtual - 1); // Retrocede para a página anterior
+    }
   };
 
   const livrosVisiveis = livrosFiltrados.slice(startIndex, startIndex + livrosPorPagina);
@@ -74,7 +99,7 @@ function Carousel() {
             </div>
           ))}
         </div>
-        <button className="nav-button" onClick={handleNext} disabled={startIndex + livrosPorPagina >= livrosFiltrados.length}>
+        <button className="nav-button" onClick={handleNext} disabled={livrosVisiveis.length < livrosPorPagina}>
           &#8250; {/* Ícone de seta direita */}
         </button>
       </div>

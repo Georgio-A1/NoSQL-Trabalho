@@ -341,3 +341,73 @@ footer div {
     font-size: 12px;
     text-align: center;
 }
+
+
+/* Livros Page */
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.book-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    text-align: center;
+}
+
+.book-card:hover {
+    transform: scale(1.03);
+}
+
+.book-card img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    max-height: 250px;
+}
+
+.card-content h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.card-content p {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.book-card a {
+    text-decoration: none; /* Remove a linha embaixo do link */
+    color: inherit; /* Herda a cor do texto, evitando cor azul no link */
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.pagination-controls button {
+    background-color: #391F00;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    margin: 0 0.5rem;
+}
+
+.pagination-controls button:hover {
+    background-color: #5A3B0D;
+}
+
+.pagination-controls button:disabled {
+    background-color: #ccc;
+}

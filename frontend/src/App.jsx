@@ -8,7 +8,9 @@ import BookDetail from "./components/BookDetail";
 import LoginPage from "./components/LoginPage";
 import PerfilPage from "./components/PerfilPage";
 import Carrinho from "./components/Carrinho";
-import PrivateRoute from "./components/PrivateRoute"; // Certifique-se de que o PrivateRoute está configurado corretamente
+import BooksPage from "./components/BooksPage"
+import FinalizarCompra from './components/FinalizarCompra';
+import PrivateRoute from "./components/PrivateRoute";
 import "./style.css";
 
 function App() {
@@ -21,8 +23,9 @@ function App() {
             <Route path="/" element={<><Carousel /><Categories /></>} />
             <Route path="/livro/:id" element={<BookDetail />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/livros" element={<BooksPage />} />
+            <Route path="/finalizar-compra" element={<FinalizarCompra />} />
 
-            {/* Rota para a página de perfil, protegida por login */}
             <Route
               path="/perfil"
               element={<PrivateRoute element={<PerfilPage />} />}

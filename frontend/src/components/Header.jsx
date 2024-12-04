@@ -28,9 +28,9 @@ function Header() {
     <header>
       <nav>
         <div className="nav-wrapper">
-          <a href="#" className="brand-logo">Logo</a>
+          <a href="/" className="brand-logo">Logo</a>
           <ul className="nav-menu">
-            <li><a href="#livros">Livros</a></li>
+            <li><a href="/livros">Livros</a></li>
             <li><a href="#promocoes">Promoções</a></li>
             <li><a href="#delivery">Delivery</a></li>
             <li><a href="#sobre">Sobre</a></li>
@@ -38,7 +38,6 @@ function Header() {
           <a href="#" className="barra-pesquisa">[Barra de pesquisar]</a>
           <ul className="nav-menu">
             <li><a href="#favoritos">Favoritos</a></li>
-            {/* Alterar o link do Carrinho para o Link do React Router */}
             <li><Link to="/carrinho" onClick={handleCarrinhoClick}>Carrinho</Link></li>
             <li>
               {usuarioLogado ? (
