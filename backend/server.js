@@ -343,19 +343,27 @@ app.post('/api/finalizar-compra/:userId', async (req, res) => {
                 'INSERT INTO ItensPedidos (id_pedido, id_produto, quantidade, valor_unitario, valor_total) VALUES ($1, $2, $3, $4, $5)',
                 [idPedido, item.idProduto, item.quantidade, livro.preco, valorTotalItem]
             );
+
+            // 4. Atualizar o estoque do livro no MongoDB
+            const novoEstoque = livro.estoque - item.quantidade;
+            if (novoEstoque < 0) {
+                return res.status(400).send(`Estoque insuficiente para o livro: ${livro.titulo}`);
+            }
+
+            // Atualizando o estoque no MongoDB
+            await Livro.findByIdAndUpdate(item.idProduto, { estoque: novoEstoque });
         }
 
-        // 4. Limpar o carrinho após a compra
+        // 5. Limpar o carrinho após a compra
         await redisClient.del(`carrinho:${userId}`);
 
-        // 5. Retornar o ID do pedido criado
+        // 6. Retornar o ID do pedido criado
         res.status(200).json({ id_pedido: idPedido });
     } catch (error) {
         console.error("Erro ao finalizar a compra:", error);
         res.status(500).send("Erro ao finalizar a compra");
     }
 });
-
 
 app.get('/api/clientes/:id', async (req, res) => {
     const { id } = req.params;
