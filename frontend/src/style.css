@@ -1,0 +1,347 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #FFFAF5;
+    width: 100%;
+}
+
+header {
+    width: 100%;
+}
+
+.nav-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    gap: 1rem;
+    align-items: center;
+}
+
+.nav-wrapper a {
+    text-decoration: none;
+}
+
+.nav-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1rem;
+    list-style-type: none;
+    padding: 0;
+    background-color: burlywood;
+}
+
+.nav-menu li a {
+    text-decoration: none;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+.wrapper-explorar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 3rem;
+    align-items: center;
+    padding: 3rem 0;
+}
+
+.texto-explorar {
+    max-width: 300px;
+}
+
+.novidades-explorar {
+    background-color: burlywood;
+    min-height: 200px;
+    min-width: 200px;
+}
+
+.carrosel-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    overflow: hidden;
+    padding: 1rem 0;
+    position: relative;
+}
+
+.carrosel-livros {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    overflow-x: hidden; /* Esconde o excesso de conteúdo horizontal */
+    width: 90%; /* Limita a largura dos livros visíveis */
+    justify-content: flex-start;
+    scroll-behavior: smooth; /* Transição suave ao navegar */
+}
+
+.livro-card {
+    flex-shrink: 0; /* Garante que os itens não redimensionem */
+    width: 150px; /* Largura fixa para todos os cartões */
+    margin: 0 0.5rem; /* Espaçamento horizontal entre os cartões */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 1rem;
+}
+
+.livro-card img {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 3px;
+}
+
+.livro-card h4 {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    color: #333;
+}
+
+.livro-card p {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.livro-card span {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Remove sublinhado em links do carrossel */
+.livro-card a {
+    text-decoration: none;
+    color: inherit; /* Mantém a cor do texto atual */
+    transition: color 0.3s ease; /* Animação suave ao passar o mouse */
+}
+
+/* Cor no hover */
+.livro-card a:hover {
+    color: #391F00; /* Adiciona destaque ao passar o mouse */
+}
+
+.nav-button {
+    background-color: #391F00; /* Marrom escuro */
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+    border-radius: 50%; /* Botões circulares */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+}
+
+.nav-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.nav-button:hover:not(:disabled) {
+    background-color: #5A3B0D; /* Tom mais claro ao passar o mouse */
+}
+
+.carrosel-submenu {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 4rem 0 1rem 0;
+}
+
+.categorias {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+    align-items: center;    
+    padding: 4rem;
+}
+
+.grid-categorias {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    max-width: 600px;
+}
+
+.grid-categorias div {
+    min-height: 20px;
+    min-width: 100px;
+    padding: 0.75rem;
+    text-align: center;
+    background-color: burlywood;
+}
+
+footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 150px;
+    background-color: #391F00;
+}
+
+.footer-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+}
+
+footer div {
+    color: white;
+}
+
+.footer-contato {
+    display: flex;
+    flex-direction: column;
+}
+
+.carrosel-menu ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+}
+
+.carrosel-menu button {
+    background-color: #391F00;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.carrosel-menu button:hover {
+    background-color: #5A3B0D;
+}
+/* Container principal */
+.book-detail-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #FFFAF5;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Layout do conteúdo */
+.book-detail-content {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+/* Imagem do livro */
+.book-detail-image {
+    width: 250px;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* Informações do livro */
+.book-detail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Estilo do título */
+.book-detail-info h1 {
+    font-size: 2rem;
+    color: #391F00;
+}
+
+/* Estilo das informações */
+.book-detail-info p {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Preço destacado */
+.book-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Botão "Adicionar ao Carrinho" */
+.add-to-cart-button {
+    background-color: #391F00;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-to-cart-button:hover {
+    background-color: #5A3B0D;
+}
+
+/* Estilos simples para a página de login */
+.login-container {
+    width: 300px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.login-container h2 {
+    text-align: center;
+}
+
+.login-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-container input {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login-container button {
+    padding: 10px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+.login-container .error-message {
+    color: red;
+    font-size: 12px;
+    text-align: center;
+}
