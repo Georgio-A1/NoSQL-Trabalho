@@ -56,21 +56,21 @@ const PerfilPage = () => {
           {carregando ? (
             <p>Carregando...</p> // Exibe durante o carregamento
           ) : (
-            <ul>
+            <ul className="card-pedido-wrapper">
               {historico.length > 0 ? (
                 historico.map((pedido) => (
-                  <li key={pedido.id_pedido}>
-                    <h3>Pedido ID: {pedido.id_pedido}</h3>
-                    <p><strong>Data:</strong> {formatarData(pedido.data)}</p>
-                    <p><strong>Valor Total:</strong> R$ {pedido.valor_total}</p>
-                    <p><strong>Método de Pagamento:</strong> {pedido.metodo_pagamento}</p>
-                    <h4>Itens do Pedido:</h4>
-                    <ul>
+                  <li key={pedido.id_pedido} className='card-pedido'>
+                    <h4>Pedido ID: {pedido.id_pedido}</h4>
+                    <span>Data: {formatarData(pedido.data)}</span>
+                    <span>Valor Total: R$ {pedido.valor_total}</span>
+                    <span>Método de Pagamento: {pedido.metodo_pagamento}</span>
+                    <span>Itens do Pedido:</span>
+                    <ul id="card-pedido-sublista">
                       {pedido.itens.map((item) => (
                         <li key={item.id_produto}>
-                          <p><strong>Título:</strong> {item.livro ? item.livro.titulo : "Livro não encontrado"}</p>
-                          <p><strong>Quantidade:</strong> {item.quantidade}</p>
-                          <p><strong>Preço Unitário:</strong> R$ {item.valor_unitario}</p>
+                          <span>Título: {item.livro ? item.livro.titulo : "Livro não encontrado"}</span>
+                          <span>Quantidade: {item.quantidade}</span>
+                          <span>Preço Unitário: R$ {item.valor_unitario}</span>
                         </li>
                       ))}
                     </ul>

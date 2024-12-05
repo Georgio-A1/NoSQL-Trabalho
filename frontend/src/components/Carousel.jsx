@@ -71,37 +71,37 @@ function Carousel() {
 
   return (
     <section>
-      <div className="carrosel-menu">
-        <h3>Explore por gênero</h3>
-        <ul>
-          <li><button onClick={() => handleFilter("Fiction")}>Ficção</button></li>
-          <li><button onClick={() => handleFilter("Action")}>Ação</button></li>
-          <li><button onClick={() => handleFilter("Adventure")}>Aventura</button></li>
-          <li><button onClick={() => handleFilter("Romance")}>Romance</button></li>
-          <li><button onClick={() => handleFilter("Fantasy")}>Fantasia</button></li>
-          <li><button onClick={() => handleFilter("Infanto-Juvenil")}>Infanto-Juvenil</button></li>
-          <li><button onClick={() => setLivrosFiltrados(livros)}>Todos</button></li> {/* Mostrar todos os livros */}
-        </ul>
-      </div>
       <div className="carrosel-container">
-        <button className="nav-button" onClick={handlePrev} disabled={startIndex === 0}>
-          &#8249; {/* Ícone de seta esquerda */}
-        </button>
+        <div className="carrosel-menu">
+          <h3>Explore por gênero</h3>
+          <ul>
+            <li><button onClick={() => setLivrosFiltrados(livros)}>Todos</button></li> {/* Mostrar todos os livros */}
+            <li><button onClick={() => handleFilter("Action")}>Ação</button></li>
+            <li><button onClick={() => handleFilter("Adventure")}>Aventura</button></li>
+            <li><button onClick={() => handleFilter("Fantasy")}>Fantasia</button></li>
+            <li><button onClick={() => handleFilter("Fiction")}>Ficção</button></li>
+            <li><button onClick={() => handleFilter("Infanto-Juvenil")}>Infanto-Juvenil</button></li>
+            <li><button onClick={() => handleFilter("Romance")}>Romance</button></li>
+          </ul>
+        </div>
         <div className="carrosel-livros">
+          <button className="nav-button" onClick={handlePrev} disabled={startIndex === 0}>
+            &#8249; {/* Ícone de seta esquerda */}
+          </button>          
           {livrosVisiveis.map((livro) => (
             <div key={livro._id} className="livro-card">
               <Link to={`/livro/${livro._id}`}>
                 <img src={livro.imagemCapa} alt={livro.titulo} className="livro-imagem" />
                 <h4>{livro.titulo}</h4>
                 <p>{livro.autor}</p>
-                <span>{livro.moeda} {livro.preco.toFixed(2)}</span>
+                <span>{livro.moeda == 'BRL' ? 'R$' : '$'} {livro.preco.toFixed(2)}</span>
               </Link>
             </div>
           ))}
+          <button className="nav-button" onClick={handleNext} disabled={livrosVisiveis.length < livrosPorPagina}>
+            &#8250; {/* Ícone de seta direita */}
+          </button>
         </div>
-        <button className="nav-button" onClick={handleNext} disabled={livrosVisiveis.length < livrosPorPagina}>
-          &#8250; {/* Ícone de seta direita */}
-        </button>
       </div>
     </section>
   );

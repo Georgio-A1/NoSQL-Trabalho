@@ -70,37 +70,52 @@ function Carrinho() {
         <div className="carrinho">
             <h1>Seu Carrinho de Compras</h1>
             {carrinho.itens.length > 0 ? (
-                <div>
+                <div className='card-produto-wrapper'>
                     <ul>
                         {carrinho.itens.map((item) => (
-                            <li key={item.idProduto}>
-                                {item.titulo} - Quantidade: {item.quantidade} - Preço: R$ {item.preco}
-                                
-                                {/* Dropdown para selecionar a quantidade a ser removida */}
-                                <select 
-                                    value={quantidadeSelecionada[item.idProduto] || 0} 
-                                    onChange={(e) => setQuantidadeSelecionada({ ...quantidadeSelecionada, [item.idProduto]: parseInt(e.target.value) })}>
-                                    <option value="0">Selecione a quantidade para remover</option>
-                                    {Array.from({ length: item.quantidade }, (_, i) => (
-                                        <option key={i+1} value={i+1}>Remover {i+1} {i+1 > 1 ? 'itens' : 'item'}</option>
-                                    ))}
-                                </select>
-
-                                {/* Botão para remover o item */}
-                                <button onClick={() => removerItem(item.idProduto)}>Remover</button>
+                            <li key={item.idProduto} className='card-produto'>
+                                <img src={item.fotoProduto} alt={item.titulo} className="livro-imagem"></img>
+                                <div className='card-produto-info'>
+                                    <span id='titulo-card'>
+                                        {item.titulo}
+                                    </span>
+                                    <div className='card-produto-detalhes'>
+                                        <span>
+                                            Quantidade: {item.quantidade}
+                                        </span>
+                                        <span>
+                                            Valor unitário: {item.moeda == 'BRL' ? 'R$' : '$'}{item.preco}
+                                        </span>
+                                        <span>
+                                            Total deste item:  {item.moeda == 'BRL' ? 'R$' : '$'}{(item.quantidade*item.preco).toFixed(2)}
+                                        </span>                                   
+                                    </div>
+                                </div>
+                                <div className='carrinho-remover'>
+                                    <select
+                                        value={quantidadeSelecionada[item.idProduto] || 0} 
+                                        onChange={(e) => setQuantidadeSelecionada({ ...quantidadeSelecionada, [item.idProduto]: parseInt(e.target.value) })}>
+                                        <option value="0">-</option>
+                                        {Array.from({ length: item.quantidade }, (_, i) => (
+                                            <option key={i+1} value={i+1}>{i+1} {i+1 > 1 ? 'itens' : 'item'}</option>
+                                        ))}
+                                    </select>
+                                    <button onClick={() => removerItem(item.idProduto)}>Remover</button>
+                                </div>
                             </li>
                         ))}
                     </ul>
-                    <div>
-                        <h3>Total de Itens: {carrinho.totalItens}</h3>
-                        <h3>Total: R$ {carrinho.totalPreco.toFixed(2)}</h3>
+                    <div className='info-carrinho'>
+                        <span>Total de Itens: {carrinho.totalItens}</span>
+                        <span>Total: R$ {carrinho.totalPreco.toFixed(2)}</span>
+                        <div className='botoes-carrinho'>
+                            <button onClick={() => window.location.href = '/finalizar-compra'}>Finalizar Compra</button>
+                            <button onClick={removerTodosItens}>Excluir carrinho</button>
+                        </div>
                     </div>
-                    <button onClick={() => window.location.href = '/'}>Continuar Comprando</button>
-                    <button onClick={() => window.location.href = '/finalizar-compra'}>Finalizar Compra</button>
-                    <button onClick={removerTodosItens}>Remover Todos os Itens</button>
                 </div>
             ) : (
-                <p>Carrinho vazio ou erro ao carregar. Tente novamente mais tarde.</p>
+                <p>Nenhum livro adicionado. Navegue pelo nosso catálogo!</p>
             )}
         </div>
     );

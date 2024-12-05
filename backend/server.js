@@ -176,7 +176,8 @@ app.post('/api/carrinho/:userId', async (req, res) => {
                 idProduto: livro._id,
                 titulo: livro.titulo,
                 preco: livro.preco,
-                quantidade: quantidade
+                quantidade: quantidade,
+                fotoProduto: livro.imagemCapa,
             });
         }
 

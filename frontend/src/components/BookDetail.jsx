@@ -47,8 +47,10 @@ function BookDetail() {
                 quantidade: 1,
             });
             console.log(`Livro "${livro.titulo}" adicionado ao carrinho com sucesso.`);
+            alert(`Livro "${livro.titulo}" adicionado ao carrinho com sucesso.`);
         } catch (error) {
             console.error("Erro ao adicionar livro ao carrinho:", error);
+            alert(`Erro ao adicionar livro "${livro.titulo}" ao carrinho`);
         }
     };
 
@@ -70,15 +72,18 @@ function BookDetail() {
                 />
                 <div className="book-detail-info">
                     <h1>{livro.titulo}</h1>
-                    <p className="book-author">Autor: {livro.autor}</p>
-                    <p className="book-description">{livro.descricao}</p>
-                    <p className="book-category">Categoria: {livro.categorias.join(', ')}</p>
-                    <p className="book-publisher">Editora: {livro.editora}</p>
-                    <p className="book-pages">Número de páginas: {livro.numeroPaginas}</p>
-                    <p className="book-language">Idioma: {livro.idioma}</p>
-                    <p className="book-price">
-                        Preço: {livro.moeda} {livro.preco.toFixed(2)}
-                    </p>
+                    <h2 className="book-author">Por {livro.autor}</h2>
+                    <p className="book-description">Descrição do livro: {livro.descricao}</p>
+                    <div>
+                        <h3>Características</h3>
+                        <p className="book-category">Categoria: {livro.categorias.join(', ')}</p>
+                        <p className="book-publisher">Editora: {livro.editora}</p>
+                        <p className="book-pages">Número de páginas: {livro.numeroPaginas}</p>
+                        <p className="book-language">Idioma: {`{livro.idioma}` == "pt" ? "Português do Brasil" : "Inglês"}</p>
+                        <p className="book-price">
+                            Preço: {livro.moeda == 'BRL' ? 'R$' : '$'} {livro.preco.toFixed(2)}
+                        </p>
+                    </div>                   
                     <button className="add-to-cart-button" onClick={handleAddToCart}>
                         Adicionar ao Carrinho
                     </button>

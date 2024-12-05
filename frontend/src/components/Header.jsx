@@ -1,5 +1,10 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom";
+import Logo from "../assets/logo.png"
+import Favorito from "../assets/heart.png"
+import Carrinho from "../assets/online-shopping.png"
+import Perfil from "../assets/user.png"
+import Procurar from "../assets/lupa.png"
 import "../style.css";
 
 function Header() {
@@ -16,36 +21,48 @@ function Header() {
   };
 
   const handleCarrinhoClick = () => {
-    if (usuarioLogado) {
-      navigate('/carrinho'); // Redireciona para a página do carrinho se estiver logado
-    } else {
-      localStorage.setItem('origem', '/carrinho'); // Armazena a origem para redirecionamento posterior
-      navigate('/login'); // Redireciona para a página de login
-    }
+    navigate('/carrinho');
+  };
+
+  const handleSairClick = () => {
+    localStorage.removeItem('usuarioLogado');  
+    navigate('/');
   };
 
   return (
     <header>
       <nav>
         <div className="nav-wrapper">
-          <a href="/" className="brand-logo">Logo</a>
+          <img src={Logo} alt="logo do site" className="logo"/>
           <ul className="nav-menu">
+            <li><Link to="/">Home</Link></li>
             <li><a href="/livros">Livros</a></li>
             <li><a href="#promocoes">Promoções</a></li>
-            <li><a href="#delivery">Delivery</a></li>
             <li><a href="#sobre">Sobre</a></li>
           </ul>
-          <a href="#" className="barra-pesquisa">[Barra de pesquisar]</a>
+          <div className="barra-pesquisa">
+            <img src={Procurar} alt="procurar por livros" className="logo-navbar-procurar"/>
+            <span>Pesquisar</span>
+          </div>
           <ul className="nav-menu">
-            <li><a href="#favoritos">Favoritos</a></li>
-            <li><Link to="/carrinho" onClick={handleCarrinhoClick}>Carrinho</Link></li>
-            <li>
+            <li><a href="#favoritos"><img src={Favorito} alt="favoritos" className="logo-navbar"/></a></li>
+            <li><Link to="/carrinho" onClick={handleCarrinhoClick}><img src={Carrinho} alt="carrinho" className="logo-navbar"/></Link></li>
+            <>
               {usuarioLogado ? (
-                <Link to="/perfil" onClick={handlePerfilClick}>Perfil</Link> 
+                <>
+                  <li>
+                    <a onClick={handlePerfilClick}><img src={Perfil} alt="perfil" className="logo-navbar"/></a> 
+                  </li>
+                  <li>
+                    <a onClick={handleSairClick}>Sair</a>
+                  </li>
+                </>
               ) : (
-                <Link to="/login">Login</Link>
+                <li>
+                  <a onClick={handlePerfilClick}><img src={Perfil} alt="login" className="logo-navbar"/></a>
+                </li>
               )}
-            </li>
+            </>
           </ul>
         </div>
       </nav>

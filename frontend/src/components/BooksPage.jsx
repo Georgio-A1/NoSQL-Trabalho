@@ -69,13 +69,13 @@ const BooksPage = () => {
       <div className="carrosel-menu">
         <h3>Explore por gênero</h3>
         <ul>
-          <li><button onClick={() => handleFilter("Fiction")}>Ficção</button></li>
+          <li><button onClick={() => carregarLivros()}>Todos</button></li> {/* Mostrar todos os livros */}
           <li><button onClick={() => handleFilter("Action")}>Ação</button></li>
           <li><button onClick={() => handleFilter("Adventure")}>Aventura</button></li>
-          <li><button onClick={() => handleFilter("Romance")}>Romance</button></li>
           <li><button onClick={() => handleFilter("Fantasy")}>Fantasia</button></li>
+          <li><button onClick={() => handleFilter("Fiction")}>Ficção</button></li>
           <li><button onClick={() => handleFilter("Infanto-Juvenil")}>Infanto-Juvenil</button></li>
-          <li><button onClick={() => carregarLivros()}>Todos</button></li> {/* Mostrar todos os livros */}
+          <li><button onClick={() => handleFilter("Romance")}>Romance</button></li>
         </ul>
       </div>
 

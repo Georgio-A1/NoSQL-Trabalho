@@ -88,15 +88,16 @@ function FinalizarCompra() {
                     <h3>Total: R$ {carrinho.totalPreco.toFixed(2)}</h3>
 
                     <h3>Método de Pagamento</h3>
-                    <select onChange={(e) => setMetodoPagamento(e.target.value)} value={metodoPagamento}>
-                        <option value="">Selecione...</option>
-                        <option value="cartao">Cartão de Crédito</option>
-                        <option value="boleto">Boleto</option>
-                        <option value="paypal">PayPal</option>
-                        <option value="pix">PIX</option>
-                    </select>
-
-                    <button onClick={handleConfirmarPedido}>Confirmar Pedido</button>
+                    <div className='pedido-finalizar'>
+                        <select onChange={(e) => setMetodoPagamento(e.target.value)} value={metodoPagamento}>
+                            <option value="">Selecione...</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="Boleto">Boleto</option>
+                            <option value="PayPal">PayPal</option>
+                            <option value="Pix">Pix</option>
+                        </select>
+                        <button onClick={handleConfirmarPedido}>Confirmar Pedido</button>
+                    </div>
                 </div>
             ) : (
                 <p>Carregando informações...</p>
