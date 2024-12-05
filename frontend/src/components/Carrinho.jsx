@@ -69,26 +69,38 @@ function Carrinho() {
         <div className="carrinho">
             <h1>Seu Carrinho de Compras</h1>
             {carrinho.itens.length > 0 ? (
-                <div>
+                <div className='card-produto-wrapper'>
                     <ul>
                         {carrinho.itens.map((item) => (
-                            <li key={item.idProduto}>
-                                <img src={item.fotoProduto} alt={item.titulo} className="livro-imagem"></img> 
-                                <span>
-                                    {item.titulo} - Quantidade: {item.quantidade} - Preço: {item.preco} - Total deste item: {(item.quantidade*item.preco).toFixed(2)}
-                                </span>
+                            <li key={item.idProduto} className='card-produto'>
+                                <img src={item.fotoProduto} alt={item.titulo} className="livro-imagem"></img>
+                                <div className='card-produto-info'>
+                                    <span id='titulo-card'>
+                                        {item.titulo}
+                                    </span>
+                                    <div className='card-produto-detalhes'>
+                                        <span>
+                                            Quantidade: {item.quantidade}
+                                        </span>
+                                        <span>
+                                            {item.currency == 'BRL' ? 'R$' : '$'}{item.preco}
+                                        </span>
+                                        <span>
+                                            Total deste item:  {item.currency == 'BRL' ? 'R$' : '$'}{(item.quantidade*item.preco).toFixed(2)}
+                                        </span>                                   
+                                    </div>
+                                </div>
                             </li>
                         ))}
                     </ul>
-                    <div>
-                        <h3>Total de Itens: {carrinho.totalItens}</h3>
-                        <h3>Preço total do carrinho: {carrinho.totalPreco}</h3>                       
+                    <div className='info-carrinho'>
+                        <span>Total de Itens: {carrinho.totalItens}</span>
+                        <span>Preço total do carrinho: {carrinho.totalPreco}</span>
+                        <div className='botoes-carrinho'>
+                            <button onClick={handleFinalizarCompra}>Finalizar Compra</button>
+                            <button onClick={handleLimparCarrinho}>Limpar carrinho</button>
+                        </div>                       
                     </div>
-                    {/* Botão para continuar comprando */}
-                    <button onClick={() => window.location.href = '/'}>Continuar Comprando</button>
-                    {/* Botão para finalizar a compra (a funcionalidade será implementada depois) */}
-                    <button onClick={handleFinalizarCompra}>Finalizar Compra</button>
-                    <button onClick={handleLimparCarrinho}>Limpar carrinho</button>
                 </div>
             ) : (
                 <p>Nenhum livro adicionado. Navegue pelo nosso catálogo!</p>

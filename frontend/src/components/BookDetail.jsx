@@ -75,15 +75,18 @@ function BookDetail() {
                 />
                 <div className="book-detail-info">
                     <h1>{livro.title}</h1>
-                    <p className="book-author">Autor: {livro.authors}</p>
-                    <p className="book-description">{livro.description}</p>
-                    <p className="book-category">Categoria: {livro.categories.join(', ')}</p>
-                    <p className="book-publisher">Editora: {livro.publisher}</p>
-                    <p className="book-pages">Número de páginas: {livro.page_count}</p>
-                    <p className="book-language">Idioma: {livro.language}</p>
-                    <p className="book-price">
-                        Preço: {livro.currency} {livro.price.toFixed(2)}
-                    </p>
+                    <h2 className="book-author">Por {livro.authors}</h2>
+                    <p className="book-description">Descrição do livro: {livro.description}</p>
+                    <div>
+                        <h3>Características</h3>
+                        <p className="book-category">Categoria: {livro.categories.join(', ')}</p>
+                        <p className="book-publisher">Editora: {livro.publisher}</p>
+                        <p className="book-pages">Número de páginas: {livro.page_count}</p>
+                        <p className="book-language">Idioma: {`{livro.language}` == "pt" ? "Português do Brasil" : "Inglês"}</p>
+                        <p className="book-price">
+                            Preço: {livro.currency == 'BRL' ? 'R$' : '$'} {livro.price.toFixed(2)}
+                        </p>
+                    </div>
                     <button className="add-to-cart-button" onClick={handleAddToCart}>
                         Adicionar ao Carrinho
                     </button>

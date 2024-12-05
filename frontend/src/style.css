@@ -14,22 +14,29 @@ header {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    gap: 1rem;
+    gap: 3rem;
     align-items: center;
 }
 
 .nav-wrapper a {
     text-decoration: none;
+    font-size: medium;
+    font-weight: 700;
+    color: #251400;
+}
+
+.nav-wrapper a:hover {
+    color: #E06A00;
 }
 
 .nav-menu {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    gap: 1rem;
+    align-items: center;
+    gap: 2rem;
     list-style-type: none;
     padding: 0;
-    background-color: burlywood;
 }
 
 .nav-menu li a {
@@ -38,6 +45,40 @@ header {
 
 a:hover {
     cursor: pointer;
+}
+
+.logo {
+    width: 200px;
+    height: 185px;
+}
+
+.logo-navbar {
+    width: 30px;
+    height: 30px;
+    transition: box-shadow .3s;
+}
+
+.logo-navbar:hover {
+    width: 30.5px;
+    height: 30.5px;
+}
+
+.logo-navbar-procurar {
+    width: 20px;
+    height: 20px;
+}
+
+.barra-pesquisa {
+    display: flex;
+    flex-direction: row;
+    min-width: 200px;
+    min-height: 20px;
+    border-bottom: solid 1px #b4b4b4;
+}
+
+.barra-pesquisa span {
+    text-align: start;
+    color: #b4b4b4;
 }
 
 .wrapper-explorar {
@@ -61,6 +102,7 @@ a:hover {
 
 .carrosel-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 1rem;
@@ -75,7 +117,6 @@ a:hover {
     flex-direction: row;
     gap: 1rem;
     overflow-x: hidden; /* Esconde o excesso de conteúdo horizontal */
-    width: 90%; /* Limita a largura dos livros visíveis */
     justify-content: flex-start;
     scroll-behavior: smooth; /* Transição suave ao navegar */
 }
@@ -125,31 +166,28 @@ a:hover {
 
 /* Cor no hover */
 .livro-card a:hover {
-    color: #391F00; /* Adiciona destaque ao passar o mouse */
+    color: #251400; /* Adiciona destaque ao passar o mouse */
 }
 
 .nav-button {
-    background-color: #391F00; /* Marrom escuro */
-    color: #fff;
+    background: none; 
+    color: #E06A00;
     border: none;
     padding: 0.5rem 1rem;
     cursor: pointer;
-    font-size: 1.5rem;
-    border-radius: 50%; /* Botões circulares */
+    font-size: 3rem;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s;
 }
 
 .nav-button:disabled {
-    background-color: #ccc;
+    color: #ccc;
     cursor: not-allowed;
 }
 
 .nav-button:hover:not(:disabled) {
-    background-color: #5A3B0D; /* Tom mais claro ao passar o mouse */
+    color: #251400;
 }
 
 .carrosel-submenu {
@@ -181,7 +219,12 @@ a:hover {
     min-width: 100px;
     padding: 0.75rem;
     text-align: center;
-    background-color: burlywood;
+    flex-shrink: 0; /* Garante que os itens não redimensionem */
+    margin: 0 0.5rem; /* Espaçamento horizontal entre os cartões */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 footer {
@@ -189,9 +232,12 @@ footer {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    min-width: 100%;
     min-height: 150px;
     background-color: #391F00;
+    position: absolute;
+    right: 0px;
+    left: 0px;
 }
 
 .footer-container {
@@ -199,7 +245,7 @@ footer {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 3rem;
+    gap: 6rem;
 }
 
 footer div {
@@ -209,19 +255,53 @@ footer div {
 .footer-contato {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.footer-contato button {
+  font-size: 16px;
+  font-weight: 200;
+  letter-spacing: 1px;
+  padding: 5px 20px 5px;
+  outline: 0;
+  color: #E06A00;
+  border: 1px solid #E06A00;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.footer-contato button:hover {
+    color: white;
+    background-color: #E06A00;
+}
+
+.carrosel-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 3rem;
+    align-items: center;
+    padding: 0;
+    color: #251400;
 }
 
 .carrosel-menu ul {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
     gap: 1rem;
-    list-style: none;
+    list-style-type: none;
     padding: 0;
 }
 
+.carrosel-menu li a {
+    text-decoration: none;
+}
+
 .carrosel-menu button {
-    background-color: #391F00;
-    color: white;
+    background: none;
+    color: #251400;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 5px;
@@ -230,7 +310,7 @@ footer div {
 }
 
 .carrosel-menu button:hover {
-    background-color: #5A3B0D;
+    color: #E06A00;
 }
 /* Container principal */
 .book-detail-container {
@@ -300,47 +380,129 @@ footer div {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    max-width: 200px;
 }
 
 .add-to-cart-button:hover {
     background-color: #5A3B0D;
 }
 
-/* Estilos simples para a página de login */
-.login-container {
-    width: 300px;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+.carrinho {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 8rem 3rem;
 }
 
-.login-container h2 {
-    text-align: center;
+.card-produto-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;   
+    padding: 0 4rem;
 }
 
-.login-container form {
+.card-produto-wrapper ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.card-produto {
+    display: flex;
+    flex-direction: row;
+    width: 400px;
+    gap: 2rem;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-produto-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.card-produto-detalhes {
     display: flex;
     flex-direction: column;
 }
 
-.login-container input {
+#titulo-card {
+    font-size: large;
+    font-weight: 700;
+}
+
+.info-carrinho {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-size: large;
+}
+
+.info-carrinho button {
+    background-color: #391F00;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    max-width: 200px;
+}
+
+.info-carrinho button:hover {
+    background-color: #5A3B0D;
+}
+
+.botoes-carrinho {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding-top: 1rem;
+}
+
+/* Estilos simples para a página de login */
+.login-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    width: 300px;
+    margin: auto;
+    padding: 0 0 5rem;
+}
+
+.login-page h2 {
+    text-align: center;
+    color: #251400;
+}
+
+.login-page form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-page input {
     margin-bottom: 10px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-.login-container button {
+.login-page button {
     padding: 10px;
     border: none;
-    background-color: #4CAF50;
+    background-color: #E06A00;
     color: white;
     cursor: pointer;
 }
 
-.login-container .error-message {
+.login-page .error-message {
     color: red;
     font-size: 12px;
     text-align: center;

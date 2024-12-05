@@ -1,5 +1,10 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom";
+import Logo from "../assets/logo.png"
+import Favorito from "../assets/heart.png"
+import Carrinho from "../assets/online-shopping.png"
+import Perfil from "../assets/user.png"
+import Procurar from "../assets/lupa.png"
 import "../style.css";
 
 function Header() {
@@ -36,23 +41,26 @@ function Header() {
     <header>
       <nav>
         <div className="nav-wrapper">
-          <a href="#" className="brand-logo">Logo</a>
+          <img src={Logo} alt="logo do site" className="logo"/>
           <ul className="nav-menu">
             <li><Link to="/">Home</Link></li>
             <li><a href="#promocoes">Promoções</a></li>
             <li><a href="#delivery">Delivery</a></li>
             <li><a href="#sobre">Sobre</a></li>
           </ul>
-          <a href="#" className="barra-pesquisa">[Barra de pesquisar]</a>
+          <div className="barra-pesquisa">
+            <img src={Procurar} alt="procurar por livros" className="logo-navbar-procurar"/>
+            <span>Pesquisar</span>
+          </div>
           <ul className="nav-menu">
-            <li><a href="#favoritos">Favoritos</a></li>
+            <li><a href="#favoritos"><img src={Favorito} alt="favoritos" className="logo-navbar"/></a></li>
             {/* Alterar o link do Carrinho para o Link do React Router */}
-            <li><a onClick={handleCarrinhoClick}>Carrinho</a></li>
+            <li><a onClick={handleCarrinhoClick}><img src={Carrinho} alt="carrinho" className="logo-navbar"/></a></li>
             <>
               {usuarioLogado ? (
                 <>
                   <li>
-                    <a onClick={handlePerfilClick}>Perfil</a> 
+                    <a onClick={handlePerfilClick}><img src={Perfil} alt="perfil" className="logo-navbar"/></a> 
                   </li>
                   <li>
                     <a onClick={handleSairClick}>Sair</a>
@@ -60,7 +68,7 @@ function Header() {
                 </>
               ) : (
                 <li>
-                  <a onClick={handleLoginClick}>Login</a>
+                  <a onClick={handleLoginClick}><img src={Perfil} alt="login" className="logo-navbar"/></a>
                 </li>
               )}
             </>
