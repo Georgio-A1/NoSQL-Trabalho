@@ -67,6 +67,12 @@ function Carousel() {
     }
   };
 
+  // Função para mostrar todos os livros
+  const showAllBooks = () => {
+    carregarLivros('', 1); // Reseta o filtro para todos os livros
+    setPaginaAtual(1); // Volta para a primeira página
+  };
+
   const livrosVisiveis = livrosFiltrados.slice(startIndex, startIndex + livrosPorPagina);
 
   return (
@@ -75,7 +81,7 @@ function Carousel() {
         <div className="carrosel-menu">
           <h3>Explore por gênero</h3>
           <ul>
-            <li><button onClick={() => setLivrosFiltrados(livros)}>Todos</button></li> {/* Mostrar todos os livros */}
+            <li><button onClick={showAllBooks}>Todos</button></li> {/* Mostrar todos os livros */}
             <li><button onClick={() => handleFilter("Action")}>Ação</button></li>
             <li><button onClick={() => handleFilter("Adventure")}>Aventura</button></li>
             <li><button onClick={() => handleFilter("Fantasy")}>Fantasia</button></li>
