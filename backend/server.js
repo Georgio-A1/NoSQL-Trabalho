@@ -2,39 +2,46 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const { Pool } = require('pg');
-const { createClient } = require('@redis/client');
+const { createClient } = require('redis');
 
 // Configurações do app
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+require('dotenv').config();
+
 // Conectar ao MongoDB
-mongoose.connect('mongodb://localhost:27017/livros_db', {})
-    .then(() => console.log('Conectado ao MongoDB'))
-    .catch(err => console.error('Erro ao conectar ao MongoDB', err));
+const mongoUri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}/${process.env.MONGO_DB_NAME}`;
+
+const mongoOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+};
+
+mongoose.connect(mongoUri, mongoOptions)
+    .then(() => console.log('Conectado a MongoDB Atlas'))
+    .catch(err => console.error('Error al conectar a MongoDB Atlas:', err));
 
 // Conectar ao Redis
 const redisClient = createClient({
     socket: {
-        host: 'localhost', 
-        port: 6379
-    }
-});
-
-redisClient.on('connect', () => {
-    console.log('Conectado ao Redis');
-});
-
-redisClient.on('error', (err) => {
-    console.error('Erro no Redis:', err);
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT,
+    },
+    password: process.env.REDIS_PASSWORD,
 });
 
 // Função de conexão assíncrona com o Redis
 async function connectRedis() {
     try {
-        await redisClient.connect(); // Conectar ao Redis
-        console.log('Conexão com Redis estabelecida');
+        // Verificar a conexão
+        if (!redisClient.isOpen) {
+            await redisClient.connect();
+            console.log('Conexão com Redis establecida');
+        } else {
+            console.log('Já esta conectado ao Redis');
+        }
     } catch (err) {
         console.error('Erro ao conectar ao Redis:', err);
     }
@@ -65,10 +72,10 @@ const Livro = mongoose.model('Livro', livroSchema);
 
 // Conectar ao PostgreSQL
 const pool = new Pool({
-    user: 'postgres',        // Seu usuário do PostgreSQL
+    user: process.env.POSTGRES_USERNAME,        // Seu usuário do PostgreSQL
     host: 'localhost',
-    database: 'Ecommerce',      // Nome do banco de dados
-    password: 'postgres',      // Senha do banco de dados
+    database: process.env.POSGRES_DB_NAME,      // Nome do banco de dados
+    password: process.env.POSTGRES_PASSWORD,      // Senha do banco de dados
     port: 5432,                 // Porta do PostgreSQL
 });
 
